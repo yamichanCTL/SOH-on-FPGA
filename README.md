@@ -18,14 +18,14 @@ Split the dataset into train set, val set,  test set.(8:1:1 or other ratio)
 project/  
 │    
 ├── datasets/  
-│   ├── train/  
-│		└── .mat  
-│   └── val/  
-│		└── .mat  
-│   └── test/  
-│	   	└── .mat  
+│  &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;├── train/  
+│		&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── .mat  
+│  &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;└── val/  
+│		&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── .mat  
+│  &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;└── test/  
+│	   	&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── .mat  
 │  
-├── LSTM/
+├── LSTM/  
 └── README.md  
 ## Run LSTMtest.ipynb in Order
 
