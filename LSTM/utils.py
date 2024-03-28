@@ -5,7 +5,7 @@ import os
 from scipy.io import loadmat
 from sklearn.preprocessing import MinMaxScaler
 import matplotlib.pyplot as plt
-import seaborn as sns
+# import seaborn as sns
 
 import torch
 import torch.nn as nn
@@ -17,20 +17,43 @@ from torch.utils.data import Dataset,DataLoader
 class LSTMModel(nn.Module):
     def __init__(self, input_size, hidden_size, num_layers, output_size):
         super(LSTMModel, self).__init__()
+        self.num_layers = num_layers
+        self.input_size = input_size
+        self.hidden_size = hidden_size
         self.lstm1 = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
         self.lstm2 = nn.LSTM(hidden_size, hidden_size, num_layers, batch_first=True)
         self.lstm3 = nn.LSTM(hidden_size, hidden_size, num_layers, batch_first=True)
         self.lstm4 = nn.LSTM(hidden_size, hidden_size, num_layers, batch_first=True)
         self.fc = nn.Linear(hidden_size, output_size)
+    
+    # def forward(self, x):
+    #     out, _ = self.lstm1(x) # shape（seq_Len, batch, num_directions * hidden_size)
+    #     out, _ = self.lstm2(out)
+    #     out, _ = self.lstm3(out)
+    #     out, _ = self.lstm4(out)
+    #     out = self.fc(out[:, -1, :])  # 使用最后一个时间步的输出作为全连接层的输入
+    #     # print(out.shape)
+    #     return out 
+    def _init_states(self,x):
+        h = torch.zeros(self.num_layers,x.size(0),self.hidden_size,dtype=x.dtype).to(x.device)
+        c = torch.zeros(self.num_layers,x.size(0),self.hidden_size,dtype=x.dtype).to(x.device)
+        return (h,c)
 
-    def forward(self, x):
-        out, _ = self.lstm1(x) # shape（seq_Len, batch, num_directions * hidden_size)
-        out, _ = self.lstm2(out)
-        out, _ = self.lstm3(out)
-        out, _ = self.lstm4(out)
+    def forward(self, x, init_states = None):
+        if init_states is None:
+            state1 = self._init_states(x)
+            state2 = self._init_states(x)
+            state3 = self._init_states(x)
+            state4 = self._init_states(x)
+        else:
+            state1,state2,state3,state4 = init_states   
+        out, _ = self.lstm1(x, state1) # shape（seq_Len, batch, num_directions * hidden_size)
+        out, _ = self.lstm2(out, state2)
+        out, _ = self.lstm3(out, state3)
+        out, _ = self.lstm4(out, state4)
         out = self.fc(out[:, -1, :])  # 使用最后一个时间步的输出作为全连接层的输入
         # print(out.shape)
-        return out
+        return out # , (state1, state2, state3, state4)
 
 # data_process
 def load_data(battery_path):
@@ -151,7 +174,7 @@ def test(model, device, test_loader):
         for test_data, test_data_real in test_loader:
             test_data = torch.squeeze(test_data).to(device)
             test_data_real = torch.squeeze(test_data_real).to(device)
-            test_output = model(test_data)
+            test_output, _ = model(test_data)
             test_output = torch.squeeze(test_output)
 
             print('---------------------------------')
@@ -159,3 +182,4 @@ def test(model, device, test_loader):
             print('RMSE:{}'.format(RMSE))
 
     return
+#%%
