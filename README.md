@@ -29,3 +29,11 @@ project/
 └── README.md  
 ## Run LSTMtest.ipynb in Order
 
+## Run Quant
+cd Vitis-AI
+./docker_run.sh xilinx/vitis-ai-pytorch-cpu:latest
+conda activate vitis-ai-pytorch
+cd SOH-on-FPGA/LSTM
+
+python quantify.py --quant_mode calib --subset_len 1
+python quantify.py --quant_mode test --subset_len 1 --batch_size=1 --deploy
