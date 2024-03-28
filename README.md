@@ -30,7 +30,7 @@ project/
 ## Run LSTMtest.ipynb in Order
 
 ## Run Quant
-cd Vitis-AI\n  
+cd Vitis-AI  
 ./docker_run.sh xilinx/vitis-ai-pytorch-cpu:latest  
 conda activate vitis-ai-pytorch  
 cd SOH-on-FPGA/LSTM  
